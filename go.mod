@@ -1,6 +1,6 @@
 module github.com/selefra/selefra-provider-datadog
 
-go 1.19
+go 1.18
 
 require (
 	github.com/DataDog/datadog-api-client-go v1.16.0
