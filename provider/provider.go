@@ -21,13 +21,10 @@ func GetProvider() *provider.Provider {
 		TableList: GenTables(),
 		ClientMeta: schema.ClientMeta{
 			InitClient: func(ctx context.Context, clientMeta *schema.ClientMeta, config *viper.Viper) ([]any, *schema.Diagnostics) {
-				var datadogConfig datadog_client.Configs
+				var datadogConfig datadog_client.Config
 				err := config.Unmarshal(&datadogConfig)
 				if err != nil {
 					return nil, schema.NewDiagnostics().AddErrorMsg(constants.Analysisconfigerrs, err.Error())
-				}
-				if len(datadogConfig.Providers) == 0 {
-					datadogConfig.Providers = append(datadogConfig.Providers, datadog_client.Config{})
 				}
 
 				clients, err := datadog_client.NewClients(datadogConfig)
@@ -58,7 +55,7 @@ func GetProvider() *provider.Provider {
 `
 			},
 			Validation: func(ctx context.Context, config *viper.Viper) *schema.Diagnostics {
-				var datadogConfig datadog_client.Configs
+				var datadogConfig datadog_client.Config
 				err := config.Unmarshal(&datadogConfig)
 				if err != nil {
 					return schema.NewDiagnostics().AddErrorMsg(constants.Analysisconfigerrs, err.Error())
