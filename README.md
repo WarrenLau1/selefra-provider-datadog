@@ -1,25 +1,28 @@
-# Selefra Provider Datadog
+# Selefra Datadog Provider
 
-Use this repo as a raw reference to **tables and schema** for Datadog cloud resources. [Here's](https://github.com/selefra/selefra-provider-datadog/blob/main/docs/tables/datadog.md) a summary of full coverage. 
-As an experienced user, the tables are especially helpful when you're writing SQL queries for specific task. 
-If you're just starting, navigate to our documentation for example usage.
- 
-## Documentation
+## Introduction
 
-See [Docs](https://selefra.io/docs) for best practices and detailed instructions. In docs, you will find info on installation, CLI usage, project workflow and more guides on how to accomplish cloud inspection tasks.
+The `selefra-provider-datadog` repo for Selefra lets you analysis `datadog` resources from your cloud programs.
+
+## Getting Started
+
+For getting started guides,installation,deployment,see our [Documentation](https://selefra.io/docs)
+
+## Contributing
+
+To contribute, visit [Contributing.md](https://github.com/selefra/selefra/blob/main/CONTRIBUTING.md) and [Selefra roadmap](https://github.com/orgs/selefra/projects/1)
 
 ## Community
 
-Selefra is a community-driven project, we welcome you to open a [GitHub Issue](https://github.com/selefra/selefra/issues/new/choose) to report a bug, suggest an improvement, or request new feature.
+Selefra is a community driven project,we welcome you to file a bug,suggest an improvement ,or request a new feature.
 
--  Join [Selefra Community](https://selefra.io/community/join) on Slack. We host `Community Hour` for tutorials and Q&As on regular basis.
--  Follow us on [Twitter](https://twitter.com/SelefraCorp) and share your thoughts！
--  Email us at support@selefra.io
+-  Join [Selefra Community Slack](https://selefra.slack.com) to discuss Selefra and join `Selefra Community Hour`.
+-  Follow us on [Twitter](https://twitter.com/SelefraCorp) and shard Selefra messages on Twitter.
+-  Have question and feature?Now on [Slack](https://selefra.slack.com) or open a [GitHub Issue](https://github.com/selefra/selefra/issues/new/choose)
 
-## CONTRIBUTING
+## Contributing
 
-For developers interested in building Selefra codebase, read through [Contributing.md](https://github.com/selefra/selefra/blob/main/CONTRIBUTING.md) and [Selefra Roadmap](https://github.com/orgs/selefra/projects/1). 
-Let us know what you would like to work on!
+To contribute, visit [Contributing.md](https://github.com/selefra/selefra/blob/main/CONTRIBUTING.md) and [Selefra roadmap](https://github/com/selefra/projects/1)
 
 ## License
 
