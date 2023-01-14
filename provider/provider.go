@@ -2,6 +2,8 @@ package provider
 
 import (
 	"context"
+	"os"
+
 	"github.com/selefra/selefra-provider-datadog/constants"
 
 	"github.com/selefra/selefra-provider-datadog/datadog_client"
@@ -20,13 +22,34 @@ func GetProvider() *provider.Provider {
 		TableList: GenTables(),
 		ClientMeta: schema.ClientMeta{
 			InitClient: func(ctx context.Context, clientMeta *schema.ClientMeta, config *viper.Viper) ([]any, *schema.Diagnostics) {
-				var datadogConfig datadog_client.Configs
+				var datadogConfig datadog_client.Config
 				err := config.Unmarshal(&datadogConfig)
 				if err != nil {
 					return nil, schema.NewDiagnostics().AddErrorMsg(constants.Analysisconfigerrs, err.Error())
 				}
-				if len(datadogConfig.Providers) == 0 {
-					datadogConfig.Providers = append(datadogConfig.Providers, datadog_client.Config{})
+
+				if datadogConfig.ApiKey == "" {
+					datadogConfig.ApiKey = os.Getenv("DATADOG_API_KEY")
+				}
+
+				if datadogConfig.ApiKey == "" {
+					return nil, schema.NewDiagnostics().AddErrorMsg("missing ApiKey in configuration")
+				}
+
+				if datadogConfig.AppKey == "" {
+					datadogConfig.AppKey = os.Getenv("DATADOG_APP_KEY")
+				}
+
+				if datadogConfig.AppKey == "" {
+					return nil, schema.NewDiagnostics().AddErrorMsg("missing AppKey in configuration")
+				}
+
+				if datadogConfig.ApiUrl == "" {
+					datadogConfig.ApiUrl = os.Getenv("DATADOG_API_URL")
+				}
+
+				if datadogConfig.ApiUrl == "" {
+					return nil, schema.NewDiagnostics().AddErrorMsg("missing ApiUrl in configuration")
 				}
 
 				clients, err := datadog_client.NewClients(datadogConfig)
@@ -57,7 +80,7 @@ func GetProvider() *provider.Provider {
 `
 			},
 			Validation: func(ctx context.Context, config *viper.Viper) *schema.Diagnostics {
-				var datadogConfig datadog_client.Configs
+				var datadogConfig datadog_client.Config
 				err := config.Unmarshal(&datadogConfig)
 				if err != nil {
 					return schema.NewDiagnostics().AddErrorMsg(constants.Analysisconfigerrs, err.Error())

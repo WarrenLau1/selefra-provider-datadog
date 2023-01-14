@@ -2,8 +2,9 @@ package provider
 
 import (
 	"context"
-	"github.com/selefra/selefra-provider-datadog/constants"
 	"os"
+
+	"github.com/selefra/selefra-provider-datadog/constants"
 
 	"testing"
 
