@@ -48,10 +48,6 @@ func GetProvider() *provider.Provider {
 					datadogConfig.ApiUrl = os.Getenv("DATADOG_API_URL")
 				}
 
-				if datadogConfig.ApiUrl == "" {
-					return nil, schema.NewDiagnostics().AddErrorMsg("missing ApiUrl in configuration")
-				}
-
 				clients, err := datadog_client.NewClients(datadogConfig)
 
 				if err != nil {
