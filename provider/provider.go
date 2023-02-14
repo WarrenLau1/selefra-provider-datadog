@@ -68,12 +68,8 @@ func GetProvider() *provider.Provider {
 		},
 		ConfigMeta: provider.ConfigMeta{
 			GetDefaultConfigTemplate: func(ctx context.Context) string {
-				return `##  Optional, Repeated. Add an accounts block for every account you want to assume-role into and fetch data from.
-#accounts:
-#  - api_key: # (required) - API keys are unique to an organization. An API key is required by the Datadog Agent to submit metrics and events to Datadog. Get an API key. May alternatively be set via the DD_CLIENT_API_KEY environment variable.
-#    app_key: # (required) - Application keys in conjunction with organization’s API key, give users access to Datadog’s programmatic API. Application keys are associated with the user account that created them and have the permissions and capabilities of the user who created them. Get an application key. May alternatively be set via the DD_CLIENT_APP_KEY environment variable.
-#    api_url: # (optional) - The API URL used for all requests. Defaults to "https://api.datadoghq.com/". If working with the EU version, this should be changed to "https://api.datadoghq.eu/".
-`
+				return `api_key: <Your Datadog Api Key>
+app_key: <Your Datadog App Key>`
 			},
 			Validation: func(ctx context.Context, config *viper.Viper) *schema.Diagnostics {
 				var datadogConfig datadog_client.Config
