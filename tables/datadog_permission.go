@@ -2,6 +2,7 @@ package tables
 
 import (
 	"context"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
 	"github.com/selefra/selefra-provider-datadog/datadog_client"
 	"github.com/selefra/selefra-provider-datadog/table_schema_generator"
@@ -34,21 +35,22 @@ func (x *TableDatadogPermissionGenerator) GetDataSource() *schema.DataSource {
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, taskClient any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 
-			ctx, apiClient, _, err := datadog_client.V2(ctx, taskClient.(*datadog_client.Client).Config)
+			ctx, apiClient, _, err := datadog_client.Server(ctx, taskClient.(*datadog_client.Client).Config)
 			if err != nil {
 
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
 			}
 
-			resp, _, err := apiClient.RolesApi.ListPermissions(ctx)
-			if err != nil {
+			api := datadogV2.NewRolesApi(apiClient)
 
+			resp, _, err := api.ListPermissions(ctx)
+
+			if err != nil {
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
 			}
 
 			for _, permission := range resp.GetData() {
 				resultChannel <- permission
-
 			}
 
 			return schema.NewDiagnosticsErrorPullTable(task.Table, nil)

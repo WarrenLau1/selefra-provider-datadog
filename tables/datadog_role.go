@@ -2,8 +2,8 @@ package tables
 
 import (
 	"context"
-
 	"github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/selefra/selefra-provider-datadog/datadog_client"
 	"github.com/selefra/selefra-provider-datadog/table_schema_generator"
 	"github.com/selefra/selefra-provider-sdk/provider/schema"
@@ -34,30 +34,30 @@ func (x *TableDatadogRoleGenerator) GetOptions() *schema.TableOptions {
 func (x *TableDatadogRoleGenerator) GetDataSource() *schema.DataSource {
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, taskClient any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
-
-			ctx, apiClient, _, err := datadog_client.V2(ctx, taskClient.(*datadog_client.Client).Config)
+			ctx, apiClient, _, err := datadog_client.Server(ctx, taskClient.(*datadog_client.Client).Config)
 			if err != nil {
-
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
 			}
 
-			opts := datadog.ListRolesOptionalParameters{
+			opts := datadogV2.ListRolesOptionalParameters{
 				PageSize:   datadog.PtrInt64(int64(100)),
 				PageNumber: datadog.PtrInt64(int64(0)),
 			}
 
 			count := int64(0)
-			for {
-				resp, _, err := apiClient.RolesApi.ListRoles(ctx, opts)
-				if err != nil {
 
+			api := datadogV2.NewRolesApi(apiClient)
+
+			for {
+				resp, _, err := api.ListRoles(ctx, opts)
+
+				if err != nil {
 					return schema.NewDiagnosticsErrorPullTable(task.Table, err)
 				}
 
 				for _, role := range resp.GetData() {
 					count++
 					resultChannel <- role
-
 				}
 
 				if resp.Meta.Page.HasTotalFilteredCount() {
@@ -71,7 +71,6 @@ func (x *TableDatadogRoleGenerator) GetDataSource() *schema.DataSource {
 				}
 				opts.WithPageNumber(*opts.PageNumber + 1)
 			}
-
 		},
 	}
 }

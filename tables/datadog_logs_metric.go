@@ -2,6 +2,7 @@ package tables
 
 import (
 	"context"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
 	"github.com/selefra/selefra-provider-datadog/datadog_client"
 	"github.com/selefra/selefra-provider-datadog/table_schema_generator"
@@ -34,25 +35,24 @@ func (x *TableDatadogLogsMetricGenerator) GetDataSource() *schema.DataSource {
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, taskClient any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 
-			ctx, apiClient, _, err := datadog_client.V2(ctx, taskClient.(*datadog_client.Client).Config)
+			ctx, apiClient, _, err := datadog_client.Server(ctx, taskClient.(*datadog_client.Client).Config)
 			if err != nil {
 
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
 			}
 
-			resp, _, err := apiClient.LogsMetricsApi.ListLogsMetrics(ctx)
-			if err != nil {
+			api := datadogV2.NewLogsMetricsApi(apiClient)
+			resp, _, err := api.ListLogsMetrics(ctx)
 
+			if err != nil {
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
 			}
 
 			for _, logMetric := range resp.GetData() {
 				resultChannel <- logMetric
-
 			}
 
 			return schema.NewDiagnosticsErrorPullTable(task.Table, nil)
-
 		},
 	}
 }

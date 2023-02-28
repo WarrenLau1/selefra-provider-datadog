@@ -14,10 +14,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/selefra/selefra-provider-datadog/constants"
-
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 )
 
 var (
@@ -168,10 +166,16 @@ func coverConfig(ctx context.Context, config *Config) (context.Context, error) {
 		return ctx, errors.New(constants.Appkeymustbeconfigured)
 	}
 
-	ctx = context.WithValue(ctx, datadogV1.ContextAPIKeys,
-		map[string]datadogV1.APIKey{
-			constants.ApiKeyAuth: {Key: apiKey},
-			constants.AppKeyAuth: {Key: appKey},
+	ctx = context.WithValue(
+		context.Background(),
+		datadog.ContextAPIKeys,
+		map[string]datadog.APIKey{
+			"apiKeyAuth": {
+				Key: apiKey,
+			},
+			"appKeyAuth": {
+				Key: appKey,
+			},
 		},
 	)
 
@@ -186,9 +190,9 @@ func coverConfig(ctx context.Context, config *Config) (context.Context, error) {
 
 		strings.Split(parsedAPIURL.Host, constants.Constants_9)
 
-		ctx = context.WithValue(ctx, datadogV1.ContextServerIndex, 1)
+		ctx = context.WithValue(ctx, datadog.ContextServerIndex, 1)
 		ctx = context.WithValue(ctx,
-			datadogV1.ContextServerVariables,
+			datadog.ContextServerVariables,
 			map[string]string{
 				constants.Name:     parsedAPIURL.Host,
 				constants.Protocol: parsedAPIURL.Scheme,
@@ -197,42 +201,12 @@ func coverConfig(ctx context.Context, config *Config) (context.Context, error) {
 	return ctx, nil
 }
 
-func V1(ctx context.Context, config *Config) (context.Context, *datadogV1.APIClient, error) {
-	ctx, err := coverConfig(ctx, config)
-	if err != nil {
-		return ctx, nil, err
-	}
-
-	httpClientV1 := http.DefaultClient
-	ctOptions := CustomTransportOptions{}
-	timeout := time.Duration(int64(60)) * time.Second
-	ctOptions.Timeout = &timeout
-	httpClientV1.Transport = NewCustomTransport(httpClientV1.Transport, ctOptions)
-
-	configuration := datadogV1.NewConfiguration()
-	configuration.HTTPClient = httpClientV1
-	apiClient := datadogV1.NewAPIClient(configuration)
-	return ctx, apiClient, nil
-}
-
-func V2(ctx context.Context, config *Config) (context.Context, *datadogV2.APIClient, *datadogV2.Configuration, error) {
+func Server(ctx context.Context, config *Config) (context.Context, *datadog.APIClient, *datadog.Configuration, error) {
 	ctx, err := coverConfig(ctx, config)
 	if err != nil {
 		return ctx, nil, nil, err
 	}
-	ctx = context.WithValue(
-		ctx,
-		datadogV2.ContextServerVariables,
-		map[string]string{constants.BasePath: constants.V},
-	)
-	httpClientV2 := http.DefaultClient
-	ctOptions := CustomTransportOptions{}
-	timeout := time.Duration(int64(60)) * time.Second
-	ctOptions.Timeout = &timeout
-	httpClientV2.Transport = NewCustomTransport(httpClientV2.Transport, ctOptions)
-
-	configuration := datadogV2.NewConfiguration()
-	configuration.HTTPClient = httpClientV2
-	apiClient := datadogV2.NewAPIClient(configuration)
+	configuration := datadog.NewConfiguration()
+	apiClient := datadog.NewAPIClient(configuration)
 	return ctx, apiClient, configuration, nil
 }

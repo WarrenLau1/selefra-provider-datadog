@@ -68,8 +68,9 @@ func GetProvider() *provider.Provider {
 		},
 		ConfigMeta: provider.ConfigMeta{
 			GetDefaultConfigTemplate: func(ctx context.Context) string {
-				return `api_key: <Your Datadog Api Key>
-app_key: <Your Datadog App Key>`
+				return `# api_key: <Your Datadog Api Key>
+# app_key: <Your Datadog App Key>
+# api_url: <Your Datadog Api Url>`
 			},
 			Validation: func(ctx context.Context, config *viper.Viper) *schema.Diagnostics {
 				var datadogConfig datadog_client.Config

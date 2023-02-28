@@ -3,13 +3,14 @@ module github.com/selefra/selefra-provider-datadog
 go 1.19
 
 require (
-	github.com/DataDog/datadog-api-client-go v1.16.0
+	github.com/DataDog/datadog-api-client-go/v2 v2.9.0
 	github.com/selefra/selefra-provider-sdk v0.0.16
 	github.com/selefra/selefra-utils v0.0.2
 	github.com/spf13/viper v1.14.0
 )
 
 require (
+	github.com/DataDog/datadog-api-client-go v1.16.0 // indirect
 	github.com/DataDog/zstd v1.5.0 // indirect
 	github.com/Masterminds/squirrel v1.5.3 // indirect
 	github.com/doug-martin/goqu/v9 v9.18.0 // indirect

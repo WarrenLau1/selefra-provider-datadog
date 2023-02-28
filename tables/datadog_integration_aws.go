@@ -2,8 +2,7 @@ package tables
 
 import (
 	"context"
-
-	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/selefra/selefra-provider-datadog/datadog_client"
 	"github.com/selefra/selefra-provider-datadog/table_schema_generator"
 	"github.com/selefra/selefra-provider-sdk/provider/schema"
@@ -34,15 +33,15 @@ func (x *TableDatadogIntegrationAwsGenerator) GetDataSource() *schema.DataSource
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, taskClient any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 
-			ctx, apiClient, err := datadog_client.V1(ctx, taskClient.(*datadog_client.Client).Config)
+			ctx, apiClient, _, err := datadog_client.Server(ctx, taskClient.(*datadog_client.Client).Config)
 			if err != nil {
 
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
 			}
 
-			opts := datadog.ListAWSAccountsOptionalParameters{}
+			api := datadogV1.NewAWSIntegrationApi(apiClient)
+			resp, _, err := api.ListAWSAccounts(ctx, *datadogV1.NewListAWSAccountsOptionalParameters())
 
-			resp, _, err := apiClient.AWSIntegrationApi.ListAWSAccounts(ctx, opts)
 			if err != nil {
 
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)

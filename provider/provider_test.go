@@ -2,9 +2,8 @@ package provider
 
 import (
 	"context"
-	"os"
-
 	"github.com/selefra/selefra-provider-datadog/constants"
+	"os"
 
 	"testing"
 
@@ -24,10 +23,12 @@ import (
 
 func TestProvider_PullTable(t *testing.T) {
 
-	os.Setenv(constants.SELEFRADATABASEDSN, constants.Hostuserpostgrespasswordpassportdbnamepostgressslmodedisable)
+	os.Setenv("SELEFRA_DATABASE_DSN", "host=127.0.0.1 user=postgres password=password port=5432 dbname=postgres sslmode=disable")
+
 	wk := constants.Constants_11
 
-	config := `provider:`
+	config := ``
+
 	myProvider := GetProvider()
 
 	Pull(myProvider, config, wk, constants.Constants_12)

@@ -2,9 +2,9 @@ package tables
 
 import (
 	"context"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"time"
 
-	"github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/selefra/selefra-provider-datadog/datadog_client"
 	"github.com/selefra/selefra-provider-datadog/table_schema_generator"
 	"github.com/selefra/selefra-provider-sdk/provider/schema"
@@ -36,7 +36,7 @@ func (x *TableDatadogSecurityMonitoringSignalGenerator) GetDataSource() *schema.
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, taskClient any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 
-			ctx, _, configuration, err := datadog_client.V2(ctx, taskClient.(*datadog_client.Client).Config)
+			ctx, apiClient, configuration, err := datadog_client.Server(ctx, taskClient.(*datadog_client.Client).Config)
 			if err != nil {
 
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
@@ -46,23 +46,25 @@ func (x *TableDatadogSecurityMonitoringSignalGenerator) GetDataSource() *schema.
 			filterTo := time.Now()
 			pageLimit := int32(50)
 
-			opts := datadog.ListSecurityMonitoringSignalsOptionalParameters{
+			opts := datadogV2.ListSecurityMonitoringSignalsOptionalParameters{
 				FilterFrom: &filterFrom,
 				FilterTo:   &filterTo,
 				PageLimit:  &pageLimit,
 			}
 
-			opts.WithSort(datadog.SECURITYMONITORINGSIGNALSSORT_TIMESTAMP_ASCENDING)
+			opts.WithSort(datadogV2.SECURITYMONITORINGSIGNALSSORT_TIMESTAMP_ASCENDING)
 
 			if opts.FilterTo == nil {
 				opts.WithFilterTo(time.Now())
 			}
 
 			configuration.SetUnstableOperationEnabled("ListSecurityMonitoringSignals", true)
-			apiClient := datadog.NewAPIClient(configuration)
+
+			api := datadogV2.NewSecurityMonitoringApi(apiClient)
 
 			for {
-				resp, _, err := apiClient.SecurityMonitoringApi.ListSecurityMonitoringSignals(ctx, opts)
+				resp, _, err := api.ListSecurityMonitoringSignals(ctx, opts)
+
 				if err != nil {
 
 					return schema.NewDiagnosticsErrorPullTable(task.Table, err)

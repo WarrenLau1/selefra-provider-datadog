@@ -10,13 +10,13 @@ func GenTables() []*schema.Table {
 	return []*schema.Table{
 		table_schema_generator.GenTableSchema(&tables.TableDatadogUserGenerator{}),
 		table_schema_generator.GenTableSchema(&tables.TableDatadogDashboardGenerator{}),
-		table_schema_generator.GenTableSchema(&tables.TableDatadogLogEventGenerator{}),
-		table_schema_generator.GenTableSchema(&tables.TableDatadogMonitorGenerator{}),
-		table_schema_generator.GenTableSchema(&tables.TableDatadogPermissionGenerator{}),
-		table_schema_generator.GenTableSchema(&tables.TableDatadogRoleGenerator{}),
-		table_schema_generator.GenTableSchema(&tables.TableDatadogIntegrationAwsGenerator{}),
-		table_schema_generator.GenTableSchema(&tables.TableDatadogLogsMetricGenerator{}),
-		table_schema_generator.GenTableSchema(&tables.TableDatadogSecurityMonitoringRuleGenerator{}),
-		table_schema_generator.GenTableSchema(&tables.TableDatadogSecurityMonitoringSignalGenerator{}),
+		//table_schema_generator.GenTableSchema(&tables.TableDatadogLogEventGenerator{}),
+		//table_schema_generator.GenTableSchema(&tables.TableDatadogMonitorGenerator{}),xx
+		//table_schema_generator.GenTableSchema(&tables.TableDatadogPermissionGenerator{}), xx
+		//table_schema_generator.GenTableSchema(&tables.TableDatadogRoleGenerator{}),xx
+		//table_schema_generator.GenTableSchema(&tables.TableDatadogIntegrationAwsGenerator{}),xx
+		//table_schema_generator.GenTableSchema(&tables.TableDatadogLogsMetricGenerator{}), xx
+		//table_schema_generator.GenTableSchema(&tables.TableDatadogSecurityMonitoringRuleGenerator{}),xx
+		//table_schema_generator.GenTableSchema(&tables.TableDatadogSecurityMonitoringSignalGenerator{}),xx
 	}
 }
